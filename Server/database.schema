@@ -1,0 +1,20 @@
+drop table if exists user_info;
+CREATE TABLE user_info(
+id integer primary key autoincrement,
+firstname VARCHAR(30),
+familyname VARCHAR(30),
+gender VARCHAR(30),
+city VARCHAR(30),
+country VARCHAR(30),
+email VARCHAR(30),
+password VARCHAR(30),
+token VARCHAR(30)
+);
+
+drop table if exists messanges;
+CREATE TABLE messanges(
+id integer primary key autoincrement,
+author VARCHAR(30),
+receiver VARCHAR(30),
+message VARCHAR(30)
+);
