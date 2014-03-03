@@ -1,3 +1,14 @@
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+
 
 function loadView(viewid){  
   
@@ -104,14 +115,6 @@ function retype(){
            document.getElementById("repeatpsw").style.borderColor = "initial";
           }
 
-         /* if(document.getElementById("password").value != document.getElementById("repeatpsw").value ) {
-            document.getElementById("repeatpsw").style.borderColor = "red";
-             document.getElementById("password").style.borderColor = "red";
-             document.getElementById("repeatpsw").value = "";
-             document.getElementById("password").value = "";
-
-          }*/
-
     }
 
 
@@ -150,7 +153,21 @@ var checksignin = function(formData){
           }
         else{
 
-          validid = serverstub.signIn(userid.email1,userid.password1);
+          xmlhttp.onreadystatechange=function()
+                {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                  {
+                  validid = xmlhttp.responseText;
+                  }
+                }
+          xmlhttp.open("POST","http://128.0.0.1:5000/signin",true);
+          xmlhttp.send("email="+userid.email1+"&password="+userid.password1);
+
+          data = JSON.parse(validid);
+          alert(data);
+      
+
+         // validid = serverstub.signIn(userid.email1,userid.password1);
           alert(document.getElementById("in").innerHTML = validid.message);
           localStorage.setItem("currentUser", validid.data);
           localStorage.setItem("activeProfile", serverstub.getUserDataByToken(validid.data).data.email);
