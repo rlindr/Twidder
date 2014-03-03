@@ -153,21 +153,22 @@ var checksignin = function(formData){
           }
         else{
 
-          xmlhttp.onreadystatechange=function()
+         xmlhttp.onreadystatechange=function()
                 {
                 if (xmlhttp.readyState==4 && xmlhttp.status==200)
                   {
-                  validid = xmlhttp.responseText;
+                  var horse = xmlhttp.responseText;
                   }
                 }
-          xmlhttp.open("POST","http://128.0.0.1:5000/signin",true);
+          xmlhttp.open("POST","http://127.0.0.1:5000/signin",true);
+          xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
           xmlhttp.send("email="+userid.email1+"&password="+userid.password1);
 
-          data = JSON.parse(validid);
-          alert(data);
+          var cow = JSON.parse(horse);
+          alert(cow);
       
 
-         // validid = serverstub.signIn(userid.email1,userid.password1);
+          validid = serverstub.signIn(userid.email1,userid.password1);
           alert(document.getElementById("in").innerHTML = validid.message);
           localStorage.setItem("currentUser", validid.data);
           localStorage.setItem("activeProfile", serverstub.getUserDataByToken(validid.data).data.email);

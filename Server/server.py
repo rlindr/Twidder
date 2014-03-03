@@ -10,6 +10,11 @@ import uuid
 import hashlib as ps
 import json
 
+try:
+  from flask_cors import cross_origin # support local usage without installed package
+except:
+  from flask.ext.cors import cross_origin # this is how you would normally import
+
  
 
 
@@ -21,6 +26,7 @@ def create_hash(password):
     return ps.sha256(password.encode()).hexdigest()
 
 @app.route('/signin', methods=['POST', 'GET']) 
+@cross_origin()
 def sign_in():
     email1 = request.args.get('email')
     password1 = request.args.get('password')
