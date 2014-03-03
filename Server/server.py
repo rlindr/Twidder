@@ -8,7 +8,10 @@ import sys
 import database_helper as dh
 import uuid
 import hashlib as ps
+import json
+
  
+
 
 # create our little application :)
 app = Flask(__name__)
@@ -26,10 +29,10 @@ def sign_in():
     generated_token = string.ascii_uppercase + string.digits +string.ascii_lowercase 
     token1 = ''.join(random.choice(generated_token) for i in range(length))
     t = dh.sign_in(email1,password1,token1)
-    return t
+    return json.dumps({"t": t}, sort_keys=True)
 
 
-@app.route('/signup', methods=['POST'])
+@app.route('/signup', methods=['POST', 'GET'])
 def sign_up():
     firstname = request.args.get('firstname')
     familyname = request.args.get('familyname')
@@ -39,10 +42,10 @@ def sign_up():
     email = request.args.get('email')
     password = request.args.get('password')
     password = create_hash(password)
-    dh.sign_up(firstname,familyname,gender,city, country, email, password)
-    return "You are now signed-up"
+    signup = dh.sign_up(firstname,familyname,gender,city, country, email, password)
+    return json.dumps({"signup": signup}, sort_keys=True)
    
-@app.route('/changepassword', methods=['POST'])
+@app.route('/changepassword', methods=['POST', 'GET'])
 def change_password():
     token1 = request.args.get('token')
     oldPassword = request.args.get('oldPassword')
@@ -51,63 +54,72 @@ def change_password():
     newPassword = create_hash(newPassword)
     err= dh.change_password(token1, oldPassword, newPassword)
     if err == "error":
-        return "You wrote wrong old password"
+        passw = 'error'
+        return json.dumps({"passw": passw}, sort_keys=True)
     else:
-        return "You have now changed password"
+        passw = 'success'
+        return json.dumps({"passw": passw}, sort_keys=True)
    
-@app.route('/signout', methods=['POST'])
+@app.route('/signout', methods=['POST', 'GET'])
 def sign_out():
     token1 = request.args.get('token')
     tokreset = 'null'
     dh.sign_out(tokreset,token1)
-    return "You have now signed-out"
-    
+    return json.dumps({"tokreset": tokreset}, sort_keys=True)
+   
 
 @app.route('/getuserdatabytoken', methods=['POST', 'GET'])
 def get_user_data_by_token():
     token = request.args.get('token')
     user = dh.get_user_data_by_token(token)
     if user is None:
-        return 'No such user'
+        error = 'error'
+        return json.dumps({"e": error}, sort_keys=True)
     else:
-        return ",".join(user)
-
+        u = ",".join(user)
+        return json.dumps({"u": u}, sort_keys=True)
+    
 @app.route('/getuserdatabyemail', methods=['POST', 'GET'])
 def get_user_data_by_email():
     email = request.args.get('email') 
     user = dh.get_user_data_by_email(email)
     if user is None:
-        return 'No such user'
+        error = 'error'
+        return json.dumps({"e": error}, sort_keys=True)
     else:
-        return ",".join(user)
+        u2 = ",".join(user)
+        return json.dumps({"u2": u2}, sort_keys=True)
     
-@app.route('/postmessage', methods=['POST'])
+@app.route('/postmessage', methods=['POST', 'GET'])
 def post_message():
     token = request.args.get('token')
     email = request.args.get('email')
     message = request.args.get('message')
     dh.post_message(token, email, message)
-    return "You have posted a message"
+    succ = 'posted'
+    return json.dumps({"succ": succ}, sort_keys=True)
 
 @app.route('/getusermessagesbytoken', methods=['POST', 'GET'])
 def get_user_messages_by_token():
     token = request.args.get('token')
     mes = dh.get_user_messages_by_token(token)
     if mes is None:
-        return 'No messages'
+        e2 = 'error'
+        return json.dumps({"e2": e2}, sort_keys=True)
     else:
-        return mes    
+        return json.dumps({"mes": mes}, sort_keys=True)    
         
         
 @app.route('/getusermessagesbyemail', methods=['POST', 'GET'])
 def get_user_messages_by_email():
     token = request.args.get('token')
     email = request.args.get('email')
-    mes = dh.get_user_messages_by_email(email)
-    if mes is None:
-        return 'No messages'
+    mes2 = dh.get_user_messages_by_email(email)
+    if mes2 is None:
+        e3 = 'error'
+        return json.dumps({"e3": e3}, sort_keys=True)
     else:
-        return mes  
+        return json.dumps({"mes2": mes2}, sort_keys=True) 
 
 
 if __name__ == '__main__':

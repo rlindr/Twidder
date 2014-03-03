@@ -62,16 +62,17 @@ def query_db(query, args=(), one=False):
 def sign_up(firstname,familyname,gender,city,country,email,password):
     user = query_db('SELECT email FROM user_info WHERE email=?',[email])
     if user is None:
-        return 'There is already an user registered with that username'
+        return 'error2'
     else:
         db = get_db()
         db.execute('insert into user_info (firstname, familyname, gender, city, country, email, password) values (?,?,?,?,?,?,?)', [firstname, familyname, gender, city, country, email, password])
         db.commit()
+        return 'sucessfull signup'
         
 def sign_in(email1,password1,token1):
     user = query_db('SELECT email,password FROM user_info WHERE email=? AND password=?',[email1,password1])
     if user == None:
-        return 'No such user registered in the database'
+        return 'error'
     else:
         db = get_db()
         db.execute('UPDATE user_info SET token=? WHERE email=? AND password=? ' , [token1, email1, password1])
