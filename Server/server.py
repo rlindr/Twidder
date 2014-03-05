@@ -30,12 +30,13 @@ def create_hash(password):
 def sign_in():
     email1 = request.form.get('email')
     password1 = request.form.get('password')
-    print email1
-    print password1
     password1 = create_hash(password1)
     length = 20
     generated_token = string.ascii_uppercase + string.digits +string.ascii_lowercase 
     token1 = ''.join(random.choice(generated_token) for i in range(length))
+    print email1
+    print password1
+    print token1
     t = dh.sign_in(email1,password1,token1)
     return json.dumps({"t": t}, sort_keys=True)
 
