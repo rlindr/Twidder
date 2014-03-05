@@ -28,8 +28,10 @@ def create_hash(password):
 @app.route('/signin', methods=['POST', 'GET']) 
 @cross_origin()
 def sign_in():
-    email1 = request.args.get('email')
-    password1 = request.args.get('password')
+    email1 = request.form.get('email')
+    password1 = request.form.get('password')
+    print email1
+    print password1
     password1 = create_hash(password1)
     length = 20
     generated_token = string.ascii_uppercase + string.digits +string.ascii_lowercase 
@@ -39,6 +41,7 @@ def sign_in():
 
 
 @app.route('/signup', methods=['POST', 'GET'])
+@cross_origin()
 def sign_up():
     firstname = request.args.get('firstname')
     familyname = request.args.get('familyname')
@@ -52,6 +55,7 @@ def sign_up():
     return json.dumps({"signup": signup}, sort_keys=True)
    
 @app.route('/changepassword', methods=['POST', 'GET'])
+@cross_origin()
 def change_password():
     token1 = request.args.get('token')
     oldPassword = request.args.get('oldPassword')
@@ -67,6 +71,7 @@ def change_password():
         return json.dumps({"passw": passw}, sort_keys=True)
    
 @app.route('/signout', methods=['POST', 'GET'])
+@cross_origin()
 def sign_out():
     token1 = request.args.get('token')
     tokreset = 'null'
@@ -75,6 +80,7 @@ def sign_out():
    
 
 @app.route('/getuserdatabytoken', methods=['POST', 'GET'])
+@cross_origin()
 def get_user_data_by_token():
     token = request.args.get('token')
     user = dh.get_user_data_by_token(token)
@@ -86,6 +92,7 @@ def get_user_data_by_token():
         return json.dumps({"u": u}, sort_keys=True)
     
 @app.route('/getuserdatabyemail', methods=['POST', 'GET'])
+@cross_origin()
 def get_user_data_by_email():
     email = request.args.get('email') 
     user = dh.get_user_data_by_email(email)
@@ -97,6 +104,7 @@ def get_user_data_by_email():
         return json.dumps({"u2": u2}, sort_keys=True)
     
 @app.route('/postmessage', methods=['POST', 'GET'])
+@cross_origin()
 def post_message():
     token = request.args.get('token')
     email = request.args.get('email')
@@ -106,6 +114,7 @@ def post_message():
     return json.dumps({"succ": succ}, sort_keys=True)
 
 @app.route('/getusermessagesbytoken', methods=['POST', 'GET'])
+@cross_origin()
 def get_user_messages_by_token():
     token = request.args.get('token')
     mes = dh.get_user_messages_by_token(token)
@@ -117,6 +126,7 @@ def get_user_messages_by_token():
         
         
 @app.route('/getusermessagesbyemail', methods=['POST', 'GET'])
+@cross_origin()
 def get_user_messages_by_email():
     token = request.args.get('token')
     email = request.args.get('email')
