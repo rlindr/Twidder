@@ -153,45 +153,49 @@ var checksignin = function(formData){
           }
         else{
 
-	       var signin = new XMLHttpRequest();
+	      /*
+
+        var signin = new XMLHttpRequest();
           signin.onreadystatechange=function()
           {
           if (signin.readyState==4 && signin.status==200)
             {
-            var data = signin.responseText;
-            var t = JSON.parse(data); //kanske kan stoppa in denna funktionen rakt in i processen
-            process(t.t); // här kan vi skicka hela objektet istället
+            login(JSON.parse(signin.responseText));
             }
           } 
          signin.open("POST","http://127.0.0.1:5000/signin",true);
 	       signin.setRequestHeader("Content-type","application/x-www-form-urlencoded");
          signin.send("email="+userid.email1+"&password="+userid.password1);
 
+         */
 
-         // plocka in hela objektet istället för bara token, tänker mig att vi kan skicka både token email och message
 
-        function login(token) {
+          /*        
 
-          localStorage.setItem("currentUser", token);
-          //den understående är lite meckig
-          //localStorage.setItem("activeProfile", serverstub.getUserDataByToken(validid.data).data.email);
-          loadView(token);
-          localStorage.test = token;
-          reloadwall();   
+          function login(data) {
+
+          alert(document.getElementById("in").innerHTML = data.message);
+          localStorage.setItem("currentUser", data.data);
+          localStorage.test = data.data;
+          loadView(data.data);
+          reloadwall();
+      
           }
 
-          // dom bortkommenterade ligger redan i funktionen som har kontakt med servern
+
+          */
 
 
-          // validid = serverstub.signIn(userid.email1,userid.password1);
+          validid = serverstub.signIn(userid.email1,userid.password1);
           alert(document.getElementById("in").innerHTML = validid.message);
-          //localStorage.setItem("currentUser", validid.data);
+          localStorage.setItem("currentUser", validid.data);
           localStorage.setItem("activeProfile", serverstub.getUserDataByToken(validid.data).data.email);
-          //localStorage.test = validid.data;
-          //loadView(validid.data);
-          //reloadwall();
+          localStorage.test = validid.data;
+          loadView(validid.data);
+          reloadwall();
 
         }
+      
 
        
 

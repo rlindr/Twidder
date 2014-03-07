@@ -34,11 +34,12 @@ def sign_in():
     length = 20
     generated_token = string.ascii_uppercase + string.digits +string.ascii_lowercase 
     token1 = ''.join(random.choice(generated_token) for i in range(length))
-    print email1
-    print password1
-    print token1
     t = dh.sign_in(email1,password1,token1)
-    return json.dumps({"t": t}, sort_keys=True)
+    print t                                         # gör varje funktion så den ligger i linje med serverstub, se nedan
+    if t == 'error':
+        return json.dumps({"success": "false", "message": "Wrong username or password."})
+    else:
+        return json.dumps({"success": "true", "message": "Successfully signed in.", "data": t})
 
 
 @app.route('/signup', methods=['POST', 'GET'])
