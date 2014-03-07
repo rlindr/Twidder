@@ -153,8 +153,7 @@ var checksignin = function(formData){
           }
         else{
 
-	      /*
-
+	      
         var signin = new XMLHttpRequest();
           signin.onreadystatechange=function()
           {
@@ -167,23 +166,26 @@ var checksignin = function(formData){
 	       signin.setRequestHeader("Content-type","application/x-www-form-urlencoded");
          signin.send("email="+userid.email1+"&password="+userid.password1);
 
-         */
-
-
-          /*        
+        
+          //funktion som hämtar datan
+                 
 
           function login(data) {
 
-          alert(document.getElementById("in").innerHTML = data.message);
+          console.log(data.data);
+          console.log(data.message);
+          console.log(data.success);
+
+          /*alert(document.getElementById("in").innerHTML = data.message);
           localStorage.setItem("currentUser", data.data);
           localStorage.test = data.data;
           loadView(data.data);
-          reloadwall();
+          reloadwall();*/
       
           }
 
 
-          */
+          //gamla servern
 
 
           validid = serverstub.signIn(userid.email1,userid.password1);

@@ -35,7 +35,7 @@ def sign_in():
     generated_token = string.ascii_uppercase + string.digits +string.ascii_lowercase 
     token1 = ''.join(random.choice(generated_token) for i in range(length))
     t = dh.sign_in(email1,password1,token1)
-    print t                                         # gör varje funktion så den ligger i linje med serverstub, se nedan
+    print t
     if t == 'error':
         return json.dumps({"success": "false", "message": "Wrong username or password."})
     else:
