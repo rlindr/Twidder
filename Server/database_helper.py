@@ -60,14 +60,23 @@ def query_db(query, args=(), one=False):
 
 
 def sign_up(firstname,familyname,gender,city,country,email,password):
-    user = query_db('SELECT email FROM user_info WHERE email=?',[email])
-    if user is None:
-        return 'error2'
-    else:
+    email1 = query_db('SELECT email FROM user_info WHERE email=?',[email])
+    password1 = query_db('SELECT password FROM user_info WHERE email=?',[password])
+    firstname1 = query_db('SELECT firstname FROM user_info WHERE email=?',[firstname])
+    familyname1 = query_db('SELECT familyname FROM user_info WHERE email=?',[familyname])
+    gender1 = query_db('SELECT gender FROM user_info WHERE email=?',[gender])
+    city1 = query_db('SELECT city FROM user_info WHERE email=?',[city])
+    country1 = query_db('SELECT country FROM user_info WHERE email=?',[country])
+    
+    if (email1 is None and password1 is None and firstname1 is None and familyname1 is None and gender1 is None and city1 is None and country1 is None):
         db = get_db()
         db.execute('insert into user_info (firstname, familyname, gender, city, country, email, password) values (?,?,?,?,?,?,?)', [firstname, familyname, gender, city, country, email, password])
         db.commit()
-        return 'sucessfull signup'
+        return 'success'
+    else:
+        return 'exists'
+                
+                            
         
 def sign_in(email1,password1,token1):
     user = query_db('SELECT email,password FROM user_info WHERE email=? AND password=?',[email1,password1])
@@ -85,25 +94,32 @@ def change_password(token1, oldPassword, newPassword):
     db = get_db()
     db.execute('UPDATE user_info SET password=? WHERE token=?', [newPassword, token1])
     db.commit()
+    return 'passwchanged'
     #else:    
         #return "error"
    
+      
 
 def sign_out(tokreset,token1):
     db = get_db()
     db.execute('UPDATE user_info SET token=? WHERE token=?' , [tokreset, token1])
     db.commit()        
-    return "You have now signed-out"
+    return "signout"
 
 def get_user_data_by_token(token):
     user = query_db('SELECT email,firstname, familyname, gender, city, country FROM user_info WHERE token=?',[token])
     r = user[0]
     return r
 
+
 def get_user_data_by_email(email):
     user = query_db('SELECT email,firstname, familyname, gender, city, country FROM user_info WHERE email=?',[email])
     r = user[0]
-    return r
+    if user is None:
+        return 'error'
+    else:
+        return r
+
 
 def post_message(token, email, message):
     #user = query_db('SELECT email FROM user_info WHERE email=?',[email])
@@ -115,6 +131,7 @@ def post_message(token, email, message):
     db = get_db()
     db.execute('insert into messanges(author, receiver, message) values (?,?,?)', [ad, email, message])
     db.commit()
+    return 'success'
 
 
 def get_user_messages_by_token(token):
