@@ -176,11 +176,11 @@ var checksignin = function(formData){
           console.log(data.message);
           console.log(data.success);
 
-          /*alert(document.getElementById("in").innerHTML = data.message);
+          alert(document.getElementById("in").innerHTML = data.message);
           localStorage.setItem("currentUser", data.data);
           localStorage.test = data.data;
           loadView(data.data);
-          reloadwall();*/
+          reloadwall();
       
           }
 
@@ -188,18 +188,15 @@ var checksignin = function(formData){
           //gamla servern
 
 
-          validid = serverstub.signIn(userid.email1,userid.password1);
-          alert(document.getElementById("in").innerHTML = validid.message);
-          localStorage.setItem("currentUser", validid.data);
+          //validid = serverstub.signIn(userid.email1,userid.password1);
+          //alert(document.getElementById("in").innerHTML = validid.message);
+          //localStorage.setItem("currentUser", validid.data);
           localStorage.setItem("activeProfile", serverstub.getUserDataByToken(validid.data).data.email);
-          localStorage.test = validid.data;
-          loadView(validid.data);
-          reloadwall();
-
+          //localStorage.test = validid.data;
+          //loadView(validid.data);
+          //reloadwall()
         }
-      
-
-       
+   
 
 }
 
@@ -299,7 +296,37 @@ var checksignup = function(formData){
     {
 
 
-      var result = serverstub.signUp(user);
+      var signup = new XMLHttpRequest();
+          signup.onreadystatechange=function()
+          {
+          if (signup.readyState==4 && signup.status==200)
+            {
+            grabdata(JSON.parse(signup.responseText));
+            }
+          } 
+         signup.open("POST","http://127.0.0.1:5000/signup",true);
+         signup.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         signup.send("fistname="+user.firstname+"&familyname="+user.familyname+"&gender="+user.gender+"&city="+user.city+"&country="+user.country+"&email="+user.email+"&password="+user.password);
+
+        
+          //funktion som hämtar datan
+                 
+
+        function grabdata(data) {
+
+          document.getElementById("up").innerHTML = data.message;
+          document.getElementById("firstname").value = "" ;
+          document.getElementById("familyname").value = "" ;  
+          document.getElementById("city").value = ""; 
+          document.getElementById("country").value = "" ;
+          document.getElementById("email").value = "" ;
+          document.getElementById("password").value = "" ;
+          document.getElementById("repeatpsw").value = "" ;
+          
+          }
+
+
+    /*  var result = serverstub.signUp(user);
       document.getElementById("up").innerHTML = result.message;
       document.getElementById("firstname").value = "" ;
       document.getElementById("familyname").value = "" ;  
@@ -307,12 +334,15 @@ var checksignup = function(formData){
       document.getElementById("country").value = "" ;
       document.getElementById("email").value = "" ;
       document.getElementById("password").value = "" ;
-      document.getElementById("repeatpsw").value = "" ;
+      document.getElementById("repeatpsw").value = "" ;*/
 
     }
   }
 
+
+
 var reloadwall = function(){
+
 
 var messages = serverstub.getUserMessagesByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data;
 
