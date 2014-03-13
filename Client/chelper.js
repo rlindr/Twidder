@@ -3,7 +3,7 @@
 //sista alternativet är att skriva koden direkt i client.js	 
 
 
-function gettoken(){
+function getToken(){
 
         var call = new XMLHttpRequest();
           call1.onreadystatechange=function()
@@ -19,14 +19,18 @@ function gettoken(){
 
         function grabdata(data) {
 
-          return data; // måste returna ut ur funktionen
+          alert(document.getElementById("in").innerHTML = data.message);
+          localStorage.setItem("currentUser", data.data);
+          localStorage.test = data.data;
+          loadView(data.data);
+          
       
         }
 
     }
 
 
-function getemail(token){
+function getEmail(token){
 
           var call = new XMLHttpRequest();
           call.onreadystatechange=function()
@@ -42,7 +46,7 @@ function getemail(token){
 
         function grabdata(data) {
 
-        return data;   // måste returna ut ur funktionen
+        localStorage.setItem("activeProfile", data.data);
 
         }
           
