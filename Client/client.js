@@ -16,7 +16,7 @@ function loadView(viewid){
   document.getElementById("profileView").innerHTML = document.getElementById("profileBody").innerHTML;
   
   viewid = localStorage.test;
-  alert(localStorage.test);
+  alert(localStorage.test); // av någon konstig anledning byter den värde på denna igen undersök!
   if(viewid==undefined){
   startview();
   }
