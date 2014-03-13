@@ -16,7 +16,7 @@ function loadView(viewid){
   document.getElementById("profileView").innerHTML = document.getElementById("profileBody").innerHTML;
   viewid = localStorage.test;
   if(viewid==undefined){
-  startview();
+	startview();
   }
   
   if(viewid!=undefined){
@@ -154,7 +154,7 @@ var checksignin = function(formData){
         else{
 
 
-        function call1(){
+	      function call1(){
         var req = new XMLHttpRequest();
           req.onreadystatechange=function()
           {
@@ -164,7 +164,7 @@ var checksignin = function(formData){
             }
           } 
          req.open("POST","http://127.0.0.1:5000/signin",true);
-         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	       req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
          req.send("email="+userid.email1+"&password="+userid.password1);
 
         
@@ -175,10 +175,10 @@ var checksignin = function(formData){
           console.log(data.data);
           console.log(data.message);
           console.log(data.success);
+          console.og("hej");
 
           alert(document.getElementById("in").innerHTML = data.message);
           localStorage.setItem("currentUser", data.data);
-          localStorage.setItem("activeProfile", "v");  // denna behöver vi ändra så den sätter activeProfile generiskt
           localStorage.test = data.data;
           loadView(data.data);
           reloadwall();
@@ -189,9 +189,6 @@ var checksignin = function(formData){
 
         call1();
 
-
-
-      // här ligger kod som vi kan använda till get data by token
         
       /*function call2(token1){
 
@@ -376,49 +373,7 @@ var checksignup = function(formData){
 var reloadwall = function(){
 
 
-function call(email){
-        var req = new XMLHttpRequest();
-          req.onreadystatechange=function()
-          {
-          if (req.readyState==4 && req.status==200)
-            {
-            grabdata(JSON.parse(req.responseText));
-            }
-          } 
-         req.open("POST","http://127.0.0.1:5000/getusermessagesbyemail",true);
-         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-         req.send("email="+email);
-
-         // funktion som hämtar datan
-                 
-          function grabdata(data) {
-
-          var messages = data.data[0];
-          console.log(messages);
-
-          document.getElementById("wall").innerHTML = "";
-
-
-          // måste modifera denna beroende på hur vi väljer att tolka datan.
-
-          /*for (var i=0;i<messages.length;i++)
-          {
-
-          document.getElementById("wall").innerHTML +=  messages[i].writer +  " " +  "says" + ":" + " " + messages[i].content + "<br>";
-
-          }*/
-      
-          }
-        }
-
-  call(localStorage.getItem("activeProfile"));
-
-
-// gammal kod
-
-
-
-/*var messages = serverstub.getUserMessagesByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data;
+var messages = serverstub.getUserMessagesByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data;
 
 document.getElementById("wall").innerHTML = "";
 
@@ -427,7 +382,7 @@ for (var i=0;i<messages.length;i++)
 
 document.getElementById("wall").innerHTML +=  messages[i].writer +  " " +  "says" + ":" + " " + messages[i].content + "<br>";
 
-}*/
+}
 
 
 }
@@ -452,37 +407,7 @@ var postmessage = function(formData){
     "post" : formData.post.value
   }  
   
-
-  function call(token, email, message){
-        var req = new XMLHttpRequest();
-          req.onreadystatechange=function()
-          {
-          if (req.readyState==4 && req.status==200)
-            {
-            grabdata(JSON.parse(req.responseText));
-            }
-          } 
-         req.open("POST","http://127.0.0.1:5000/postmessage",true);
-         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-         req.send("token="+token+"&email="+email+"&message="+message);
-
-        
-          //funktion som hämtar datan
-                 
-          function grabdata(data) {
-
-          //här ska vi hämta success eller fail
-
-      
-          }
-        }
-
-  call(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile"), content.post);
-
-
-  // gammal data
-
-  //serverstub.postMessage(localStorage.getItem("currentUser"), content.post, serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data.email);
+  serverstub.postMessage(localStorage.getItem("currentUser"), content.post, serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data.email);
   reloadwall();
 
 }
@@ -490,6 +415,7 @@ var postmessage = function(formData){
  
 function popdata(email){
 
+  console.log(email);
   function call(email){
         var req = new XMLHttpRequest();
           req.onreadystatechange=function()
@@ -517,10 +443,7 @@ function popdata(email){
 
   call(email);
 
-
-  // gammal kod
-
- //var user = serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), email);
+ // var user = serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), email);
 /*  document.getElementById("fn").innerHTML = user.data.firstname;
   document.getElementById("fmn").innerHTML = user.data.familyname;
   document.getElementById("gender1").innerHTML = user.data.gender;
@@ -528,10 +451,10 @@ function popdata(email){
   document.getElementById("country1").innerHTML = user.data.country;
   document.getElementById("email2").innerHTML = user.data.email;*/
 
- // document.getElementById("name").innerHTML = user.data.firstname + " " + user.data.familyname + " " + "(" +  user.data.gender + ")";
- // document.getElementById("location").innerHTML = user.data.city + " " + user.data.country;
- // document.getElementById("email2").innerHTML = user.data.email;
-
+ /* document.getElementById("name").innerHTML = user.data.firstname + " " + user.data.familyname + " " + "(" +  user.data.gender + ")";
+  document.getElementById("location").innerHTML = user.data.city + " " + user.data.country;
+  document.getElementById("email2").innerHTML = user.data.email;
+*/
 
 
 

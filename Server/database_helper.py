@@ -60,27 +60,28 @@ def query_db(query, args=(), one=False):
 
 
 def sign_up(firstname,familyname,gender,city,country,email,password):
+
+  
     email1 = query_db('SELECT email FROM user_info WHERE email=?',[email])
-    password1 = query_db('SELECT password FROM user_info WHERE email=?',[password])
-    firstname1 = query_db('SELECT firstname FROM user_info WHERE email=?',[firstname])
-    familyname1 = query_db('SELECT familyname FROM user_info WHERE email=?',[familyname])
-    gender1 = query_db('SELECT gender FROM user_info WHERE email=?',[gender])
-    city1 = query_db('SELECT city FROM user_info WHERE email=?',[city])
-    country1 = query_db('SELECT country FROM user_info WHERE email=?',[country])
-    
-    if (email1 is None and password1 is None and firstname1 is None and familyname1 is None and gender1 is None and city1 is None and country1 is None):
+    if email1 == []:
         db = get_db()
         db.execute('insert into user_info (firstname, familyname, gender, city, country, email, password) values (?,?,?,?,?,?,?)', [firstname, familyname, gender, city, country, email, password])
         db.commit()
+        print 'win'
         return 'success'
     else:
+        print 'fail'
         return 'exists'
                 
                             
         
 def sign_in(email1,password1,token1):
+
     user = query_db('SELECT email,password FROM user_info WHERE email=? AND password=?',[email1,password1])
-    if user == None:
+    print user
+
+
+    if user == []:
         return 'error'
     else:
         db = get_db()
@@ -107,7 +108,9 @@ def sign_out(tokreset,token1):
     return "signout"
 
 def get_user_data_by_token(token):
+    print('token: '+token)
     user = query_db('SELECT email,firstname, familyname, gender, city, country FROM user_info WHERE token=?',[token])
+    print user
     r = user[0]
     return r
 
@@ -125,7 +128,8 @@ def post_message(token, email, message):
     #user = query_db('SELECT email FROM user_info WHERE email=?',[email])
     #if user is None:
     #    return 'The reciever of this message is not registered'
-    #else:   
+    #else: 
+
     au = query_db('SELECT email FROM user_info WHERE token=?',[token])
     ad = ",".join(au[0]) 
     db = get_db()
@@ -138,6 +142,7 @@ def get_user_messages_by_token(token):
     re = query_db('SELECT email FROM user_info WHERE token=?',[token])
     rt = ''.join(re[0])
     l = []
+
     for mes in query_db('SELECT message FROM messanges WHERE receiver=?',[rt]):
         if mes is None:
             return 'None'
@@ -147,6 +152,8 @@ def get_user_messages_by_token(token):
     return st
     
 def get_user_messages_by_email(email):
+    # kan vi spara ner denna som array?
+
     ll = []
     for mes in query_db('SELECT message FROM messanges WHERE receiver=?',[email]):
         if mes is None:
