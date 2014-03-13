@@ -14,7 +14,9 @@ function loadView(viewid){
   
   document.getElementById("welcomeView").innerHTML = document.getElementById("welcomeBody").innerHTML;
   document.getElementById("profileView").innerHTML = document.getElementById("profileBody").innerHTML;
+  
   viewid = localStorage.test;
+  alert(localStorage.test);
   if(viewid==undefined){
   startview();
   }
@@ -60,7 +62,46 @@ var check ={
 }
 
 var logout = function(){
-  var utloggad = serverstub.signOut(localStorage.getItem("currentUser")); 
+
+  function call1(token){
+        var req = new XMLHttpRequest();
+          req.onreadystatechange=function()
+          {
+          if (req.readyState==4 && req.status==200)
+            {
+            grabdata(JSON.parse(req.responseText));
+            }
+          } 
+         req.open("POST","http://127.0.0.1:5000/signout",true);
+         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         req.send("token="+token);
+
+        
+          //funktion som hämtar datan
+                 
+          function grabdata(data) {
+            alert(data.message);
+            if(data.message = "Successfully signed out."){
+            localStorage.setItem("currentUser", undefined);
+            localStorage.setItem("activeProfile", undefined);    
+            localStorage.test = "undefined";
+            loadView(undefined);
+            }
+            else{
+              alert("Try to log out again");
+            }
+
+          }
+        }
+
+
+        call1(localStorage.getItem("currentUser"));
+
+
+  // gammal kod
+
+
+  /*var utloggad = serverstub.signOut(localStorage.getItem("currentUser")); 
     if(utloggad.message = "Successfully signed out."){
     localStorage.setItem("currentUser", undefined);
     localStorage.setItem("activeProfile", undefined);    
@@ -69,7 +110,7 @@ var logout = function(){
     }
     else{
       alert("Try to log out again");
-    }
+    }*/
 }
 
 
@@ -171,10 +212,6 @@ var checksignin = function(formData){
           //funktion som hämtar datan
                  
           function grabdata(data) {
-
-          console.log(data.data);
-          console.log(data.message);
-          console.log(data.success);
 
           alert(document.getElementById("in").innerHTML = data.message);
           localStorage.setItem("currentUser", data.data);
@@ -393,8 +430,7 @@ function call(email){
                  
           function grabdata(data) {
 
-          var messages = data.data[0];
-          console.log(messages);
+          var messages = data.data;
 
           document.getElementById("wall").innerHTML = "";
 
@@ -569,7 +605,7 @@ function startview()
 
 function homeview()
 {
-  popdata(localStorage.getItem("activeProfile"));
+  //popdata(localStorage.getItem("activeProfile"));
   document.getElementById("startview").className = "hidden";
   document.getElementById("homeview").className =  "show";
 

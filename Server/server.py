@@ -79,7 +79,7 @@ def change_password():
 @app.route('/signout', methods=['POST', 'GET'])
 @cross_origin()
 def sign_out():
-    token1 = request.args.get('token')
+    token1 = request.form.get('token')
     tokreset = 'null'
     signed = dh.sign_out(tokreset,token1)
     if signed == "signout":
@@ -148,11 +148,10 @@ def get_user_messages_by_token():
 @app.route('/getusermessagesbyemail', methods=['POST', 'GET'])
 @cross_origin()
 def get_user_messages_by_email():
-    #token = request.form.get('token')  # i serverstud tar dom in token också, vet inte om vi behöver göra detta
+    #token = request.form.get('token')
     email = request.form.get('email')
     mes2 = dh.get_user_messages_by_email(email)
 
-    # måste antingen göra om mes2 till array eller skriva om koden i klienten för att hantera lines
 
     if mes2 is None:
         e3 = 'error'
