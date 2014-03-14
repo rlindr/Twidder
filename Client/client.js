@@ -216,7 +216,7 @@ var checksignin = function(formData){
 
           alert(document.getElementById("in").innerHTML = data.message);
           localStorage.setItem("currentUser", data.data);
-          localStorage.setItem("activeProfile", "v");  // denna behöver vi ändra så den sätter activeProfile generiskt
+          localStorage.setItem("activeProfile", "v");  // denna behöver vi ändra så den sätter activeProfile generiskt DENNA ÄR INSTÄLLD TILL ROBINS LOGIN
           localStorage.test = data.data;
           loadView(data.data);
           reloadwall();
