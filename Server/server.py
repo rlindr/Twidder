@@ -111,7 +111,6 @@ def get_user_data_by_email():
     gender =  user[3]
     city =  user[4]
     country = user[5]
-
     if user is None:
         return json.dumps({"success": "false", "message":"No such user."})
     else:
@@ -148,11 +147,9 @@ def get_user_messages_by_token():
 @app.route('/getusermessagesbyemail', methods=['POST', 'GET'])
 @cross_origin()
 def get_user_messages_by_email():
-    #token = request.form.get('token')
+    #token = request.form.get('token') i serverstub tas token in vet inte om vi borde gora det har
     email = request.form.get('email')
     mes2 = dh.get_user_messages_by_email(email)
-
-
     if mes2 is None:
         e3 = 'error'
         return json.dumps({"success": "false", "message":"No such user."})

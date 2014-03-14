@@ -9,7 +9,6 @@ else
   }
 
 
-
 function loadView(viewid){  
   
   document.getElementById("welcomeView").innerHTML = document.getElementById("welcomeBody").innerHTML;
@@ -23,8 +22,7 @@ function loadView(viewid){
   }
 
 
-  if(viewid!=undefined){
-  alert(viewid);
+  if(viewid!="undefined"){
   homeview();
   }
 
@@ -108,7 +106,7 @@ var logout = function(){
     if(utloggad.message = "Successfully signed out."){
     localStorage.setItem("currentUser", undefined);
     localStorage.setItem("activeProfile", undefined);    
-    localStorage.test = "undefined";
+    localStorage.test = undefined;
     loadView(undefined);
     }
     else{
@@ -434,6 +432,7 @@ function call(email){
           function grabdata(data) {
 
           var messages = data.data;
+          console.log(messages);
 
           document.getElementById("wall").innerHTML = "";
 
@@ -608,7 +607,7 @@ function startview()
 
 function homeview()
 {
-  //popdata(localStorage.getItem("activeProfile"));
+  popdata(localStorage.getItem("activeProfile"));
   document.getElementById("startview").className = "hidden";
   document.getElementById("homeview").className =  "show";
 
