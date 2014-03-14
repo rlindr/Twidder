@@ -16,12 +16,15 @@ function loadView(viewid){
   document.getElementById("profileView").innerHTML = document.getElementById("profileBody").innerHTML;
   
   viewid = localStorage.test;
-  alert(localStorage.test); // av någon konstig anledning byter den värde på denna igen undersök!
+  //alert(viewid); // av någon konstig anledning byter den värde på denna igen undersök!
+
   if(viewid==undefined){
   startview();
   }
-  
+
+
   if(viewid!=undefined){
+  alert(viewid);
   homeview();
   }
 
@@ -84,7 +87,7 @@ var logout = function(){
             if(data.message = "Successfully signed out."){
             localStorage.setItem("currentUser", undefined);
             localStorage.setItem("activeProfile", undefined);    
-            localStorage.test = "undefined";
+            localStorage.test = undefined;
             loadView(undefined);
             }
             else{
