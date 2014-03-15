@@ -454,7 +454,34 @@ var checksignup = function(formData){
 var reloadwall = function(){
 
 
-function call(email){
+
+//websocket
+
+
+var connection = new WebSocket('ws://127.0.0.1:5000/getusermessagesbyemail');
+
+connection.onopen=function() 
+{
+   connection.send(localStorage.getItem("activeProfile"));
+};
+
+
+
+connection.onmessage=function(e) 
+{
+
+          var messages = e.data;
+          document.getElementById("wall").innerHTML = "";
+          document.getElementById("wall").innerHTML +=  messages + "<br>";
+
+};
+
+
+//xmlhttp
+
+
+
+/*function call(email){
         var req = new XMLHttpRequest();
           req.onreadystatechange=function()
           {
@@ -490,7 +517,7 @@ function call(email){
         }
 
   call(localStorage.getItem("activeProfile"));
-
+*/
 
 // gammal kod
 
@@ -617,10 +644,11 @@ function popdata(email){
 
 
 function home()
-{
+{ 
   document.getElementById("home").className = "show";
   document.getElementById("browse").className = "hidden";
   document.getElementById("account").className = "hidden";
+  //reloadwall();
 }
 
 function browse()

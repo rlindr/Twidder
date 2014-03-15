@@ -10,6 +10,7 @@ import uuid
 import hashlib as ps
 import json
 from gevent.wsgi import WSGIServer
+from geventwebsocket.handler import WebSocketHandler
 
 
 try:
@@ -157,15 +158,29 @@ def get_user_messages_by_token():
 @app.route('/getusermessagesbyemail', methods=['POST', 'GET'])
 @cross_origin()
 def get_user_messages_by_email():
-    #token = request.form.get('token') i serverstub tas token in vet inte om vi borde gora det har
-    email = request.form.get('email')
-    mes2 = dh.get_user_messages_by_email(email)
-    if mes2 is None:
-        e3 = 'error'
-        return json.dumps({"success": "false", "message":"No such user."})
-    else:
-        return json.dumps({"success": "true", "message": "User messages retrieved.", "data": mes2})
+
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            email = ws.receive()
+            mes2 = dh.get_user_messages_by_email(email)
+            ws.send(json.dumps(mes2))
+
+    return
+
+
+
+
+
+    # token = request.form.get('token') i serverstub tas token in vet inte om vi borde gora det har
+    # email = request.form.get('email')
+    # mes2 = dh.get_user_messages_by_email(email)
+    # if mes2 is None:
+    #     e3 = 'error'
+    #     return json.dumps({"success": "false", "message":"No such user."})
+    # else:
+    #     return json.dumps({"success": "true", "message": "User messages retrieved.", "data": mes2})
 
 if __name__ == '__main__':
-  http_server = WSGIServer(('', 5000), app)
+  http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
   http_server.serve_forever()
