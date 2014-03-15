@@ -9,6 +9,32 @@ else
   }
 
 
+// Real Time Communication
+
+function rtc(){
+
+
+              var connection = new WebSocket('ws://127.0.0.1:5000/realtime');
+
+              connection.onopen=function() 
+              {
+                 connection.send(localStorage.ticketList);
+              };
+
+              connection.onerror = function (error) 
+              {
+                console.log('WebSocket Error ' + error);
+              };
+
+              connection.onmessage=function(e) 
+              {
+                  console.log('Received: ' + e.data);  
+              };
+
+
+}
+
+
 function loadView(viewid){  
   
   document.getElementById("welcomeView").innerHTML = document.getElementById("welcomeBody").innerHTML;
@@ -251,6 +277,8 @@ var checksignin = function(formData){
           localStorage.test = data.data;
           loadView(data.data);
           reloadwall();
+            
+
             }else{
 
               document.getElementById("password1").value = "";
@@ -454,34 +482,7 @@ var checksignup = function(formData){
 var reloadwall = function(){
 
 
-
-//websocket
-
-
-var connection = new WebSocket('ws://127.0.0.1:5000/getusermessagesbyemail');
-
-connection.onopen=function() 
-{
-   connection.send(localStorage.getItem("activeProfile"));
-};
-
-
-
-connection.onmessage=function(e) 
-{
-
-          var messages = e.data;
-          document.getElementById("wall").innerHTML = "";
-          document.getElementById("wall").innerHTML +=  messages + "<br>";
-
-};
-
-
-//xmlhttp
-
-
-
-/*function call(email){
+function call(email){
         var req = new XMLHttpRequest();
           req.onreadystatechange=function()
           {
@@ -499,7 +500,6 @@ connection.onmessage=function(e)
           function grabdata(data) {
 
           var messages = data.data;
-          console.log(messages);
 
           document.getElementById("wall").innerHTML = "";
 
@@ -517,7 +517,6 @@ connection.onmessage=function(e)
         }
 
   call(localStorage.getItem("activeProfile"));
-*/
 
 // gammal kod
 
@@ -576,14 +575,15 @@ var postmessage = function(formData){
                  
           function grabdata(data) {
 
-          //här ska vi hämta success eller fail
 
+          document.getElementById("post").value = "";
+          //här ska vi hämta success eller fail
       
           }
         }
 
   call(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile"), content.post);
-
+  localStorage.ticketList = content.post;
 
   // gammal data
 
@@ -685,6 +685,15 @@ function homeview()
 window.onload = function() {
   loadView(localStorage.test);
 }
+
+
+
+
+
+
+
+
+
 
 
 

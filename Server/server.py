@@ -32,6 +32,22 @@ app.config['DEBUG'] = True
 def create_hash(password):
     return ps.sha256(password.encode()).hexdigest()
 
+
+
+# Real Time Communication
+
+@app.route('/realtime', methods=['POST', 'GET'])
+@cross_origin()
+def real_time():
+    if request.environ.get('wsgi.websocket'):
+        ws = request.environ['wsgi.websocket']
+        while True:
+            message = ws.receive()
+            ws.send(message)
+            
+
+
+
 @app.route('/signin', methods=['POST', 'GET']) 
 @cross_origin()
 def sign_in():
@@ -46,8 +62,6 @@ def sign_in():
         return json.dumps({"success": "false", "message": "Wrong username or password."})
     else:
         return json.dumps({"success": "true", "message": "Successfully signed in.", "data": t})
-
-
 
 @app.route('/signup', methods=['POST', 'GET'])
 @cross_origin()
@@ -74,9 +88,6 @@ def change_password():
     token1 = request.form.get('token')
     oldPassword = request.form.get('oldPassword')
     newPassword = request.form.get('newPassword')
-    print token1
-    print oldPassword
-    print newPassword
     oldPassword = create_hash(oldPassword)
     newPassword = create_hash(newPassword)
     err= dh.change_password(token1, oldPassword, newPassword)
@@ -132,15 +143,14 @@ def get_user_data_by_email():
 @app.route('/postmessage', methods=['POST', 'GET'])
 @cross_origin()
 def post_message():
-    token = request.form.get('token')
-    email = request.form.get('email')
-    message = request.form.get('message')
-    print message
-    post = dh.post_message(token, email, message)
-    if post is None:
-      return json.dumps({"success": "false", "message":"No such user."})
-    else: 
-      return json.dumps({"success": "true", "message": "Message posted"})
+     token = request.form.get('token')
+     email = request.form.get('email')
+     message = request.form.get('message')
+     post = dh.post_message(token, email, message)
+     if post is None:
+       return json.dumps({"success": "false", "message":"No such user."})
+     else: 
+       return json.dumps({"success": "true", "message": "Message posted"})
   
 
 @app.route('/getusermessagesbytoken', methods=['POST', 'GET'])
@@ -158,28 +168,14 @@ def get_user_messages_by_token():
 @app.route('/getusermessagesbyemail', methods=['POST', 'GET'])
 @cross_origin()
 def get_user_messages_by_email():
-
-    if request.environ.get('wsgi.websocket'):
-        ws = request.environ['wsgi.websocket']
-        while True:
-            email = ws.receive()
-            mes2 = dh.get_user_messages_by_email(email)
-            ws.send(json.dumps(mes2))
-
-    return
-
-
-
-
-
-    # token = request.form.get('token') i serverstub tas token in vet inte om vi borde gora det har
-    # email = request.form.get('email')
-    # mes2 = dh.get_user_messages_by_email(email)
-    # if mes2 is None:
-    #     e3 = 'error'
-    #     return json.dumps({"success": "false", "message":"No such user."})
-    # else:
-    #     return json.dumps({"success": "true", "message": "User messages retrieved.", "data": mes2})
+    #token = request.form.get('token')  tas in i server stub vet inte om vi behover andvanda har
+    email = request.form.get('email')
+    mes2 = dh.get_user_messages_by_email(email)
+    if mes2 is None:
+        e3 = 'error'
+        return json.dumps({"success": "false", "message":"No such user."})
+    else:
+        return json.dumps({"success": "true", "message": "User messages retrieved.", "data": mes2})
 
 if __name__ == '__main__':
   http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
