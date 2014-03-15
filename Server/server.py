@@ -9,6 +9,8 @@ import database_helper as dh
 import uuid
 import hashlib as ps
 import json
+from gevent.wsgi import WSGIServer
+
 
 try:
   from flask_cors import cross_origin # support local usage without installed package
@@ -21,6 +23,10 @@ except:
 # create our little application :)
 app = Flask(__name__)
 app.config['DEBUG'] = True
+
+
+
+
 
 def create_hash(password):
     return ps.sha256(password.encode()).hexdigest()
@@ -161,4 +167,5 @@ def get_user_messages_by_email():
         return json.dumps({"success": "true", "message": "User messages retrieved.", "data": mes2})
 
 if __name__ == '__main__':
-    app.run()
+  http_server = WSGIServer(('', 5000), app)
+  http_server.serve_forever()
