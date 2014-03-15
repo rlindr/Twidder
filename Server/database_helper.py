@@ -153,14 +153,19 @@ def get_user_messages_by_token(token):
     
 def get_user_messages_by_email(email):
     # kan vi spara ner denna som array?
-
+    i = 0
     ll = []
-    for mes in query_db('SELECT message FROM messanges WHERE receiver=?',[email]):
+    st = []
+    for mes in reversed(query_db('SELECT author, message FROM messanges WHERE receiver=?',[email])):
         if mes is None:
             return 'None'
         else:
-            ll.append(mes['message']) 
-    st = '\n'.join(ll)
+            st.append(mes['author'] + " says: " + mes['message'])
     return st
+    #        
+    #ll.append(mes['message']) 
+    #st = '\n'.join(ll)
+    #i+=1
+    #return st
 
     

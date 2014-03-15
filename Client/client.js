@@ -479,12 +479,12 @@ function call(email){
 
           // måste modifera denna beroende på hur vi väljer att tolka datan.
 
-          /*for (var i=0;i<messages.length;i++)
+          for (var i=0;i<messages.length;i++)
           {
 
-          document.getElementById("wall").innerHTML +=  messages[i].writer +  " " +  "says" + ":" + " " + messages[i].content + "<br>";
+          document.getElementById("wall").innerHTML +=  messages[i] + "<br>";
 
-          }*/
+          }
       
           }
         }
