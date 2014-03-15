@@ -57,8 +57,38 @@ var check ={
           }
           else{
 
-          var result = serverstub.changePassword(localStorage.getItem("currentUser"), check.oldPassword, check.newPassword);
-          alert(result.message);
+            function call1(token, oldPass, newPass){
+              var req = new XMLHttpRequest();
+                req.onreadystatechange=function()
+                {
+                if (req.readyState==4 && req.status==200)
+                  {
+                  grabdata(JSON.parse(req.responseText));
+                  }
+                } 
+               req.open("POST","http://127.0.0.1:5000/changepassword",true);
+               req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+               req.send("token="+token+"&oldPassword="+oldPass+"&newPassword="+newPass);
+
+              
+                //funktion som hämtar datan
+                       
+                function grabdata(data) {
+                alert(data.message);
+                document.getElementById("oldPassword").value = "";
+                document.getElementById("newPassword").value = "";
+
+                }
+        }
+
+
+        call1(localStorage.getItem("currentUser"), check.oldPassword, check.newPassword);
+
+
+
+
+          /*var result = serverstub.changePassword(localStorage.getItem("currentUser"), check.oldPassword, check.newPassword);
+          alert(result.message);*/
           }
 }
 
@@ -215,11 +245,21 @@ var checksignin = function(formData){
           function grabdata(data) {
 
           alert(document.getElementById("in").innerHTML = data.message);
+          if (data.message == "Successfully signed in."){
           localStorage.setItem("currentUser", data.data);
-          localStorage.setItem("activeProfile", "v");  // denna behöver vi ändra så den sätter activeProfile generiskt DENNA ÄR INSTÄLLD TILL ROBINS LOGIN
+          localStorage.setItem("activeProfile", userid.email1);  // denna behöver vi ändra så den sätter activeProfile generiskt DENNA ÄR INSTÄLLD TILL ROBINS LOGIN
           localStorage.test = data.data;
           loadView(data.data);
           reloadwall();
+            }else{
+
+              document.getElementById("password1").value = "";
+              document.getElementById("password1").style.borderColor = "initial";
+              document.getElementById("email1").value = "";
+              document.getElementById("email1").style.borderColor = "initial";
+              document.getElementById("in").innerHTML = "";
+
+            }
       
           }
         }

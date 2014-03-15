@@ -64,12 +64,16 @@ def sign_up():
 @app.route('/changepassword', methods=['POST', 'GET'])
 @cross_origin()
 def change_password():
-    token1 = request.args.get('token')
-    oldPassword = request.args.get('oldPassword')
-    newPassword = request.args.get('newPassword')
+    token1 = request.form.get('token')
+    oldPassword = request.form.get('oldPassword')
+    newPassword = request.form.get('newPassword')
+    print token1
+    print oldPassword
+    print newPassword
     oldPassword = create_hash(oldPassword)
     newPassword = create_hash(newPassword)
     err= dh.change_password(token1, oldPassword, newPassword)
+    print err
     if err == "passwchanged":
         return json.dumps({"success": "true", "message":"Password changed."})
     else:
