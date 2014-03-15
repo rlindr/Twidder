@@ -9,17 +9,20 @@ else
   }
 
 
-
 function loadView(viewid){  
   
   document.getElementById("welcomeView").innerHTML = document.getElementById("welcomeBody").innerHTML;
   document.getElementById("profileView").innerHTML = document.getElementById("profileBody").innerHTML;
-  viewid = localStorage.test;
-  if(viewid==undefined){
-	startview();
-  }
   
-  if(viewid!=undefined){
+  viewid = localStorage.test;
+  //alert(viewid); // av någon konstig anledning byter den värde på denna igen undersök!
+
+  if(viewid==undefined){
+  startview();
+  }
+
+
+  if(viewid!="undefined"){
   homeview();
   }
 
@@ -60,16 +63,55 @@ var check ={
 }
 
 var logout = function(){
-  var utloggad = serverstub.signOut(localStorage.getItem("currentUser")); 
+
+  function call1(token){
+        var req = new XMLHttpRequest();
+          req.onreadystatechange=function()
+          {
+          if (req.readyState==4 && req.status==200)
+            {
+            grabdata(JSON.parse(req.responseText));
+            }
+          } 
+         req.open("POST","http://127.0.0.1:5000/signout",true);
+         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         req.send("token="+token);
+
+        
+          //funktion som hämtar datan
+                 
+          function grabdata(data) {
+            alert(data.message);
+            if(data.message = "Successfully signed out."){
+            localStorage.setItem("currentUser", undefined);
+            localStorage.setItem("activeProfile", undefined);    
+            localStorage.test = undefined;
+            loadView(undefined);
+            }
+            else{
+              alert("Try to log out again");
+            }
+
+          }
+        }
+
+
+        call1(localStorage.getItem("currentUser"));
+
+
+  // gammal kod
+
+
+  /*var utloggad = serverstub.signOut(localStorage.getItem("currentUser")); 
     if(utloggad.message = "Successfully signed out."){
     localStorage.setItem("currentUser", undefined);
     localStorage.setItem("activeProfile", undefined);    
-    localStorage.test = "undefined";
+    localStorage.test = undefined;
     loadView(undefined);
     }
     else{
       alert("Try to log out again");
-    }
+    }*/
 }
 
 
@@ -153,53 +195,78 @@ var checksignin = function(formData){
           }
         else{
 
-	      
-        var signin = new XMLHttpRequest();
-          signin.onreadystatechange=function()
+
+        function call1(){
+        var req = new XMLHttpRequest();
+          req.onreadystatechange=function()
           {
-          if (signin.readyState==4 && signin.status==200)
+          if (req.readyState==4 && req.status==200)
             {
-            login(JSON.parse(signin.responseText));
+            grabdata(JSON.parse(req.responseText));
             }
           } 
-         signin.open("POST","http://127.0.0.1:5000/signin",true);
-	       signin.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-         signin.send("email="+userid.email1+"&password="+userid.password1);
+         req.open("POST","http://127.0.0.1:5000/signin",true);
+         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         req.send("email="+userid.email1+"&password="+userid.password1);
 
         
           //funktion som hämtar datan
                  
+          function grabdata(data) {
 
-          function login(data) {
-
-          console.log(data.data);
-          console.log(data.message);
-          console.log(data.success);
-
-          /*alert(document.getElementById("in").innerHTML = data.message);
+          alert(document.getElementById("in").innerHTML = data.message);
           localStorage.setItem("currentUser", data.data);
+          localStorage.setItem("activeProfile", "v");  // denna behöver vi ändra så den sätter activeProfile generiskt DENNA ÄR INSTÄLLD TILL ROBINS LOGIN
           localStorage.test = data.data;
           loadView(data.data);
-          reloadwall();*/
+          reloadwall();
       
           }
+        }
+
+
+        call1();
+
+
+
+      // här ligger kod som vi kan använda till get data by token
+        
+      /*function call2(token1){
+
+        var req = new XMLHttpRequest();
+          req.onreadystatechange=function()
+          {
+          if (req.readyState==4 && req.status==200)
+            {
+              console.log(this.responseText);
+            grabdata(JSON.parse(req.responseText));
+            }
+          }
+          
+         req.open("POST","http://127.0.0.1:5000/getuserdatabytoken",true);
+         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         req.send("token="+token1);
+
+                 
+          function grabdata(data) {
+
+          localStorage.setItem("activeProfile", data.data);   
+          }
+        }*/
 
 
           //gamla servern
 
 
-          validid = serverstub.signIn(userid.email1,userid.password1);
-          alert(document.getElementById("in").innerHTML = validid.message);
-          localStorage.setItem("currentUser", validid.data);
-          localStorage.setItem("activeProfile", serverstub.getUserDataByToken(validid.data).data.email);
-          localStorage.test = validid.data;
-          loadView(validid.data);
-          reloadwall();
-
+          //validid = serverstub.signIn(userid.email1,userid.password1);
+          //alert(document.getElementById("in").innerHTML = validid.message);
+          //localStorage.setItem("currentUser", validid.data);
+          //localStorage.setItem("activeProfile", serverstub.getUserDataByToken(validid.data).data.email);
+          //localStorage.test = validid.data;
+          //loadView(validid.data);
+          //reloadwall()
         }
-      
-
-       
+   
 
 }
 
@@ -299,7 +366,37 @@ var checksignup = function(formData){
     {
 
 
-      var result = serverstub.signUp(user);
+      var signup = new XMLHttpRequest();
+          signup.onreadystatechange=function()
+          {
+          if (signup.readyState==4 && signup.status==200)
+            {
+            grabdata(JSON.parse(signup.responseText));
+            }
+          } 
+         signup.open("POST","http://127.0.0.1:5000/signup",true);
+         signup.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         signup.send("firstname="+user.firstname+"&familyname="+user.familyname+"&gender="+user.gender+"&city="+user.city+"&country="+user.country+"&email="+user.email+"&password="+user.password);
+
+        
+          //funktion som hämtar datan
+                 
+
+        function grabdata(data) {
+
+          document.getElementById("up").innerHTML = data.message;
+          document.getElementById("firstname").value = "" ;
+          document.getElementById("familyname").value = "" ;  
+          document.getElementById("city").value = ""; 
+          document.getElementById("country").value = "" ;
+          document.getElementById("email").value = "" ;
+          document.getElementById("password").value = "" ;
+          document.getElementById("repeatpsw").value = "" ;
+          
+          }
+
+
+    /*  var result = serverstub.signUp(user);
       document.getElementById("up").innerHTML = result.message;
       document.getElementById("firstname").value = "" ;
       document.getElementById("familyname").value = "" ;  
@@ -307,14 +404,59 @@ var checksignup = function(formData){
       document.getElementById("country").value = "" ;
       document.getElementById("email").value = "" ;
       document.getElementById("password").value = "" ;
-      document.getElementById("repeatpsw").value = "" ;
+      document.getElementById("repeatpsw").value = "" ;*/
 
     }
   }
 
+
+
 var reloadwall = function(){
 
-var messages = serverstub.getUserMessagesByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data;
+
+function call(email){
+        var req = new XMLHttpRequest();
+          req.onreadystatechange=function()
+          {
+          if (req.readyState==4 && req.status==200)
+            {
+            grabdata(JSON.parse(req.responseText));
+            }
+          } 
+         req.open("POST","http://127.0.0.1:5000/getusermessagesbyemail",true);
+         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         req.send("email="+email);
+
+         // funktion som hämtar datan
+                 
+          function grabdata(data) {
+
+          var messages = data.data;
+          console.log(messages);
+
+          document.getElementById("wall").innerHTML = "";
+
+
+          // måste modifera denna beroende på hur vi väljer att tolka datan.
+
+          /*for (var i=0;i<messages.length;i++)
+          {
+
+          document.getElementById("wall").innerHTML +=  messages[i].writer +  " " +  "says" + ":" + " " + messages[i].content + "<br>";
+
+          }*/
+      
+          }
+        }
+
+  call(localStorage.getItem("activeProfile"));
+
+
+// gammal kod
+
+
+
+/*var messages = serverstub.getUserMessagesByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data;
 
 document.getElementById("wall").innerHTML = "";
 
@@ -323,7 +465,7 @@ for (var i=0;i<messages.length;i++)
 
 document.getElementById("wall").innerHTML +=  messages[i].writer +  " " +  "says" + ":" + " " + messages[i].content + "<br>";
 
-}
+}*/
 
 
 }
@@ -348,14 +490,75 @@ var postmessage = function(formData){
     "post" : formData.post.value
   }  
   
-  serverstub.postMessage(localStorage.getItem("currentUser"), content.post, serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data.email);
+
+  function call(token, email, message){
+        var req = new XMLHttpRequest();
+          req.onreadystatechange=function()
+          {
+          if (req.readyState==4 && req.status==200)
+            {
+            grabdata(JSON.parse(req.responseText));
+            }
+          } 
+         req.open("POST","http://127.0.0.1:5000/postmessage",true);
+         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         req.send("token="+token+"&email="+email+"&message="+message);
+
+        
+          //funktion som hämtar datan
+                 
+          function grabdata(data) {
+
+          //här ska vi hämta success eller fail
+
+      
+          }
+        }
+
+  call(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile"), content.post);
+
+
+  // gammal data
+
+  //serverstub.postMessage(localStorage.getItem("currentUser"), content.post, serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data.email);
   reloadwall();
 
 }
 
  
 function popdata(email){
-  var user = serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), email);
+
+  function call(email){
+        var req = new XMLHttpRequest();
+          req.onreadystatechange=function()
+          {
+          if (req.readyState==4 && req.status==200)
+            {
+            grabdata(JSON.parse(req.responseText));
+            }
+          } 
+         req.open("POST","http://127.0.0.1:5000/getuserdatabyemail",true);
+         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+         req.send("email="+email);
+
+        
+          //funktion som hämtar datan
+                 
+          function grabdata(data) {
+
+          document.getElementById("name").innerHTML = data.firstname + " " + data.familyname + " " + "(" +  data.gender + ")";
+          document.getElementById("location").innerHTML = data.city + " " + data.country;
+          document.getElementById("email2").innerHTML = data.email;
+      
+          }
+        }
+
+  call(email);
+
+
+  // gammal kod
+
+ //var user = serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), email);
 /*  document.getElementById("fn").innerHTML = user.data.firstname;
   document.getElementById("fmn").innerHTML = user.data.familyname;
   document.getElementById("gender1").innerHTML = user.data.gender;
@@ -363,9 +566,9 @@ function popdata(email){
   document.getElementById("country1").innerHTML = user.data.country;
   document.getElementById("email2").innerHTML = user.data.email;*/
 
-  document.getElementById("name").innerHTML = user.data.firstname + " " + user.data.familyname + " " + "(" +  user.data.gender + ")";
-  document.getElementById("location").innerHTML = user.data.city + " " + user.data.country;
-  document.getElementById("email2").innerHTML = user.data.email;
+ // document.getElementById("name").innerHTML = user.data.firstname + " " + user.data.familyname + " " + "(" +  user.data.gender + ")";
+ // document.getElementById("location").innerHTML = user.data.city + " " + user.data.country;
+ // document.getElementById("email2").innerHTML = user.data.email;
 
 
 

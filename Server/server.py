@@ -35,7 +35,6 @@ def sign_in():
     generated_token = string.ascii_uppercase + string.digits +string.ascii_lowercase 
     token1 = ''.join(random.choice(generated_token) for i in range(length))
     t = dh.sign_in(email1,password1,token1)
-    print t
     if t == 'error':
         return json.dumps({"success": "false", "message": "Wrong username or password."})
     else:
@@ -46,13 +45,13 @@ def sign_in():
 @app.route('/signup', methods=['POST', 'GET'])
 @cross_origin()
 def sign_up():
-    firstname = request.args.get('firstname')
-    familyname = request.args.get('familyname')
-    gender = request.args.get('gender')
-    city = request.args.get('city')
-    country = request.args.get('country')
-    email = request.args.get('email')
-    password = request.args.get('password')
+    firstname = request.form.get('firstname')
+    familyname = request.form.get('familyname')
+    gender = request.form.get('gender')
+    city = request.form.get('city')
+    country = request.form.get('country')
+    email = request.form.get('email')
+    password = request.form.get('password')
     password = create_hash(password)
     signup = dh.sign_up(firstname,familyname,gender,city, country, email, password)
     if signup == 'success':
@@ -80,7 +79,7 @@ def change_password():
 @app.route('/signout', methods=['POST', 'GET'])
 @cross_origin()
 def sign_out():
-    token1 = request.args.get('token')
+    token1 = request.form.get('token')
     tokreset = 'null'
     signed = dh.sign_out(tokreset,token1)
     if signed == "signout":
@@ -92,7 +91,7 @@ def sign_out():
 @app.route('/getuserdatabytoken', methods=['POST', 'GET'])
 @cross_origin()
 def get_user_data_by_token():
-    token = request.args.get('token')
+    token = request.form.get('token')
     user = dh.get_user_data_by_token(token)
     if user is None:
         error = 'error'
@@ -105,21 +104,27 @@ def get_user_data_by_token():
 @app.route('/getuserdatabyemail', methods=['POST', 'GET'])
 @cross_origin()
 def get_user_data_by_email():
-    email = request.args.get('email') 
+    email = request.form.get('email')
     user = dh.get_user_data_by_email(email)
+    firstname =  user[1]
+    familyname =  user[2]
+    gender =  user[3]
+    city =  user[4]
+    country = user[5]
     if user is None:
         return json.dumps({"success": "false", "message":"No such user."})
     else:
         u2 = ",".join(user)
-        return json.dumps({"success": "true", "message": "User data retrieved.", "data": u2})
+        return json.dumps({"success": "true", "message": "User data retrieved.", "email": email, "firstname": firstname, "familyname": familyname, "gender": gender, "city": city, "country": country})
 
     
 @app.route('/postmessage', methods=['POST', 'GET'])
 @cross_origin()
 def post_message():
-    token = request.args.get('token')
-    email = request.args.get('email')
-    message = request.args.get('message')
+    token = request.form.get('token')
+    email = request.form.get('email')
+    message = request.form.get('message')
+    print message
     post = dh.post_message(token, email, message)
     if post is None:
       return json.dumps({"success": "false", "message":"No such user."})
@@ -142,8 +147,8 @@ def get_user_messages_by_token():
 @app.route('/getusermessagesbyemail', methods=['POST', 'GET'])
 @cross_origin()
 def get_user_messages_by_email():
-    token = request.args.get('token')
-    email = request.args.get('email')
+    #token = request.form.get('token') i serverstub tas token in vet inte om vi borde gora det har
+    email = request.form.get('email')
     mes2 = dh.get_user_messages_by_email(email)
     if mes2 is None:
         e3 = 'error'
