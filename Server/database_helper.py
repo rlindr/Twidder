@@ -142,14 +142,13 @@ def get_user_messages_by_token(token):
     re = query_db('SELECT email FROM user_info WHERE token=?',[token])
     rt = ''.join(re[0])
     l = []
-
-    for mes in query_db('SELECT message FROM messanges WHERE receiver=?',[rt]):
+    st1 = []
+    for mes in query_db('SELECT author, message FROM messanges WHERE receiver=?',[rt]):
         if mes is None:
             return 'None'
         else:
-            l.append(mes['message']) 
-    st = '\n'.join(l)
-    return st
+            st1.append(mes['author'] + " says: " + mes['message'])
+    return st1
     
 def get_user_messages_by_email(email):
     # kan vi spara ner denna som array?
