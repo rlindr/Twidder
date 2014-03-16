@@ -137,12 +137,12 @@ def get_user_messages_by_token(token):
     l = []
     st1 = []
     for mes in reversed(query_db('SELECT author, message FROM messanges WHERE receiver=?',[rt])):
+    for mes in query_db('SELECT author, message FROM messanges WHERE receiver=?',[rt]):
         if mes is None:
             return 'None'
         else:
             st1.append(mes['author'] + " says: " + mes['message'])
     return st1
-
 
 
     
