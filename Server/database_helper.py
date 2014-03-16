@@ -110,7 +110,7 @@ def get_user_data_by_token(token):
 
 def get_user_data_by_email(email):
     user = query_db('SELECT email,firstname, familyname, gender, city, country FROM user_info WHERE email=?',[email])
-    r = user[0]
+    r = "".join(user[0]) 
     if user is None:
         return 'error'
     else:
@@ -132,12 +132,11 @@ def post_message(token, email, message):
 
 
 def get_user_messages_by_token(token):
-    ##re = query_db('SELECT email FROM user_info WHERE token=?',[token])
-    rt = "d"
+    re = query_db('SELECT email FROM user_info WHERE token=?',[token])
+    rt = ",".join(re[0]) 
     l = []
     st1 = []
     for mes in reversed(query_db('SELECT author, message FROM messanges WHERE receiver=?',[rt])):
-    for mes in query_db('SELECT author, message FROM messanges WHERE receiver=?',[rt]):
         if mes is None:
             return 'None'
         else:
