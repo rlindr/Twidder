@@ -34,18 +34,6 @@ def create_hash(password):
 
 
 
-# Real Time Communication
-
-@app.route('/realtime', methods=['POST', 'GET'])
-@cross_origin()
-def real_time():
-    if request.environ.get('wsgi.websocket'):
-        ws = request.environ['wsgi.websocket']
-        while True:
-            message = ws.receive()
-            ws.send(message)
-            
-
 
 
 @app.route('/signin', methods=['POST', 'GET']) 
@@ -91,7 +79,6 @@ def change_password():
     oldPassword = create_hash(oldPassword)
     newPassword = create_hash(newPassword)
     err= dh.change_password(token1, oldPassword, newPassword)
-    print err
     if err == "passwchanged":
         return json.dumps({"success": "true", "message":"Password changed."})
     else:
@@ -156,13 +143,24 @@ def post_message():
 @app.route('/getusermessagesbytoken', methods=['POST', 'GET'])
 @cross_origin()
 def get_user_messages_by_token():
-    token = request.args.get('token')
-    mes = dh.get_user_messages_by_token(token)
-    if mes is None:
-        e2 = 'error'
-        return json.dumps({"success": "false", "message":"No such user."})
-    else:
-        return json.dumps({"success": "true", "message": "User messages retrieved.", "data": mes}) 
+        if request.environ.get("wsgi.websocket"):
+            ws = request.environ["wsgi.websocket"]
+            while True:
+                message = ws.receive() 
+                mes2 = dh.get_user_messages_by_token((str(message)))
+                ws.send(json.dumps({"data": mes2}))
+        return ""
+
+
+
+
+    # token = request.args.get('token')
+    # mes = dh.get_user_messages_by_token(token)
+    # if mes is None:
+    #     e2 = 'error'
+    #     return json.dumps({"success": "false", "message":"No such user."})
+    # else:
+    #     return json.dumps({"success": "true", "message": "User messages retrieved.", "data": mes}) 
         
         
 @app.route('/getusermessagesbyemail', methods=['POST', 'GET'])

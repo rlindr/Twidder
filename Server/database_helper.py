@@ -67,10 +67,8 @@ def sign_up(firstname,familyname,gender,city,country,email,password):
         db = get_db()
         db.execute('insert into user_info (firstname, familyname, gender, city, country, email, password) values (?,?,?,?,?,?,?)', [firstname, familyname, gender, city, country, email, password])
         db.commit()
-        print 'win'
         return 'success'
     else:
-        print 'fail'
         return 'exists'
                 
                             
@@ -78,9 +76,6 @@ def sign_up(firstname,familyname,gender,city,country,email,password):
 def sign_in(email1,password1,token1):
 
     user = query_db('SELECT email,password FROM user_info WHERE email=? AND password=?',[email1,password1])
-    print user
-
-
     if user == []:
         return 'error'
     else:
@@ -108,9 +103,7 @@ def sign_out(tokreset,token1):
     return "signout"
 
 def get_user_data_by_token(token):
-    print('token: '+token)
     user = query_db('SELECT email,firstname, familyname, gender, city, country FROM user_info WHERE token=?',[token])
-    print user
     r = user[0]
     return r
 
@@ -139,17 +132,19 @@ def post_message(token, email, message):
 
 
 def get_user_messages_by_token(token):
-    re = query_db('SELECT email FROM user_info WHERE token=?',[token])
-    rt = ''.join(re[0])
+    ##re = query_db('SELECT email FROM user_info WHERE token=?',[token])
+    rt = "d"
     l = []
-
-    for mes in query_db('SELECT message FROM messanges WHERE receiver=?',[rt]):
+    st1 = []
+    for mes in reversed(query_db('SELECT author, message FROM messanges WHERE receiver=?',[rt])):
         if mes is None:
             return 'None'
         else:
-            l.append(mes['message']) 
-    st = '\n'.join(l)
-    return st
+            st1.append(mes['author'] + " says: " + mes['message'])
+    return st1
+
+
+
     
 def get_user_messages_by_email(email):
     # kan vi spara ner denna som array?

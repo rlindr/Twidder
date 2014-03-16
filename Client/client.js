@@ -9,30 +9,6 @@ else
   }
 
 
-// Real Time Communication
-
-function rtc(){
-
-
-              var connection = new WebSocket('ws://127.0.0.1:5000/realtime');
-
-              connection.onopen=function() 
-              {
-                 connection.send(localStorage.ticketList);
-              };
-
-              connection.onerror = function (error) 
-              {
-                console.log('WebSocket Error ' + error);
-              };
-
-              connection.onmessage=function(e) 
-              {
-                  console.log('Received: ' + e.data);  
-              };
-
-
-}
 
 
 function loadView(viewid){  
@@ -277,7 +253,8 @@ var checksignin = function(formData){
           localStorage.test = data.data;
           loadView(data.data);
           reloadwall();
-            
+          
+  
 
             }else{
 
@@ -295,33 +272,36 @@ var checksignin = function(formData){
 
         call1();
 
+          var connection = new WebSocket('ws://127.0.0.1:5000/getusermessagesbytoken');
+            connection.onopen = function () {
+            connection.send(localStorage.currentUser);
 
+            };
 
-      // här ligger kod som vi kan använda till get data by token
         
-      /*function call2(token1){
+ 
+          //onmessage
+          connection.onmessage = function (msg) {
+              temp = JSON.parse(msg.data);
+              var messages = temp.data;
+              
+              document.getElementById("wall").innerHTML =  "";
+                        
+              for (var i=0;i<messages.length;i++)
+                {
 
-        var req = new XMLHttpRequest();
-          req.onreadystatechange=function()
-          {
-          if (req.readyState==4 && req.status==200)
-            {
-              console.log(this.responseText);
-            grabdata(JSON.parse(req.responseText));
-            }
-          }
-          
-         req.open("POST","http://127.0.0.1:5000/getuserdatabytoken",true);
-         req.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-         req.send("token="+token1);
+                document.getElementById("wall").innerHTML +=  messages[i] + "<br>";
 
-                 
-          function grabdata(data) {
+                }
 
-          localStorage.setItem("activeProfile", data.data);   
-          }
-        }*/
+              connection.send(localStorage.currentUser);
+           
 
+          };
+
+
+
+     
 
           //gamla servern
 
@@ -583,12 +563,12 @@ var postmessage = function(formData){
         }
 
   call(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile"), content.post);
-  localStorage.ticketList = content.post;
+  
 
   // gammal data
 
   //serverstub.postMessage(localStorage.getItem("currentUser"), content.post, serverstub.getUserDataByEmail(localStorage.getItem("currentUser"), localStorage.getItem("activeProfile")).data.email);
-  reloadwall();
+  //reloadwall();
 
 }
 
