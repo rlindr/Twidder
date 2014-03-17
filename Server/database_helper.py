@@ -146,7 +146,6 @@ def get_user_messages_by_token(token):
 
     
 def get_user_messages_by_email(email):
-    # kan vi spara ner denna som array?
     i = 0
     ll = []
     st = []
